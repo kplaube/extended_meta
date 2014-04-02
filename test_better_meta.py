@@ -72,6 +72,26 @@ class BetterMetaUnfilledMetaTestCase(BetterMetaTestCase):
     def test_should_use_index_follow_as_default_robots_data(self):
         self.assertEqual(self.article.meta['robots'], 'index,follow')
 
+    def test_should_format_the_summary_to_use_as_description(self):
+        self.article.summary = '<p>This is a "test"! <strong>Just a test!</strong></p>'
+        BetterMeta.create_meta_attribute(self.article)
+
+        self.assertEqual(self.article.meta['description'], 'This is a \"test\"! Just a test!')
+
+    def test_should_limit_the_summary_content_when_using_it_as_description(self):
+        self.article.summary = """<p>Do you see any Teletubbies in here? Do you
+        see a slender plastic tag clipped to my shirt with my name printed on
+        it? Do you see a little Asian child with a blank expression on his
+        face sitting outside on a mechanical helicopter that shakes when you
+        put quarters in it? No? Well, that's what you see at a toy store.
+        And you must think you're in a toy store, because you're here shopping
+        for an infant named Jeb.<p>"""
+        BetterMeta.create_meta_attribute(self.article)
+
+        self.assertEqual(self.article.meta['description'],
+            'Do you see any Teletubbies in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with a ...')
+
+
 class BetterMetaPelicanIntegrationTestCase(unittest.TestCase):
 
     def setUp(self):

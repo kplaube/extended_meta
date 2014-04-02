@@ -1,7 +1,10 @@
+from jinja2 import Markup
 from pelican import signals
+import textwrap
 
 META_ATTRIBUTES = ('description', 'keywords', 'robots')
 DEFAULT_ROBOTS = 'index,follow'
+META_DESCRIPTION_LENGTH = 155
 
 
 def register():
@@ -31,7 +34,13 @@ class BetterMeta:
 
     @classmethod
     def get_default_meta_description(cls, article):
-        return article.summary
+        summary = Markup(article.summary).striptags()
+        description = textwrap.wrap(summary, META_DESCRIPTION_LENGTH)[0]
+
+        if len(summary) > META_DESCRIPTION_LENGTH:
+            return "{0} ...".format(description)
+        else:
+            return description
 
     @classmethod
     def get_default_meta_keywords(cls, article):

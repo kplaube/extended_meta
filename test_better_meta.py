@@ -6,6 +6,8 @@ from better_meta import BetterMeta
 class FakeGenerator(object):
 
     def __init__(self):
+        self.settings = {
+        }
         self.articles = []
 
         for i in range(10):
@@ -19,6 +21,7 @@ class FakeArticle(object):
     def __init__(self):
         self.summary = 'should-be-summary'
         self.tags = [FakeTag('tag1'), FakeTag('tag2'), FakeTag('tag3')]
+        self.url = 'should-be-the-article-url.html'
 
 
 class FakeTag(object):
@@ -56,6 +59,13 @@ class BetterMetaFilledMetaTestCase(BetterMetaTestCase):
 
         self.assertEqual(self.article.meta['robots'], 'index,follow')
 
+    def test_should_create_meta_canonical(self):
+        BetterMeta.settings['SITEURL'] = 'http://localhost'
+        BetterMeta.create_meta_attribute(self.article)
+
+        self.assertEqual(self.article.meta['canonical'],
+                            'http://localhost/should-be-the-article-url.html')
+
 
 class BetterMetaUnfilledMetaTestCase(BetterMetaTestCase):
 
@@ -89,7 +99,7 @@ class BetterMetaUnfilledMetaTestCase(BetterMetaTestCase):
         BetterMeta.create_meta_attribute(self.article)
 
         self.assertEqual(self.article.meta['description'],
-            'Do you see any Teletubbies in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with a ...')
+            'Do you see any Teletubbies in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with a...')
 
 
 class BetterMetaPelicanIntegrationTestCase(unittest.TestCase):

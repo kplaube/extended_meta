@@ -12,15 +12,20 @@ def register():
 
 
 class BetterMeta:
+    settings = {}
 
     @classmethod
     def add_meta_to_articles(cls, generator):
+        cls.settings = generator.settings
+
         for article in generator.articles:
             cls.create_meta_attribute(article)
 
     @classmethod
     def create_meta_attribute(cls, article):
-        article.meta = {}
+        article.meta = {
+            'canonical': cls.get_canonical(article),
+        }
 
         for key in META_ATTRIBUTES:
             article_attrib = "meta_%s" % key
@@ -33,12 +38,16 @@ class BetterMeta:
             article.meta[key] = meta_value
 
     @classmethod
+    def get_canonical(cls, article):
+        return "{0}/{1}".format(cls.settings.get('SITEURL', ''), article.url)
+
+    @classmethod
     def get_default_meta_description(cls, article):
         summary = Markup(article.summary).striptags()
         description = textwrap.wrap(summary, META_DESCRIPTION_LENGTH)[0]
 
         if len(summary) > META_DESCRIPTION_LENGTH:
-            return "{0} ...".format(description)
+            return "{0}...".format(description)
         else:
             return description
 

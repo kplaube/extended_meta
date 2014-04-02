@@ -47,7 +47,7 @@ class BetterMeta:
         description = textwrap.wrap(summary, META_DESCRIPTION_LENGTH)[0]
 
         if len(summary) > META_DESCRIPTION_LENGTH:
-            return "{0}...".format(description)
+            return description + '...'
         else:
             return description
 

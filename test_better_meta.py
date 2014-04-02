@@ -18,7 +18,13 @@ class FakeArticle(object):
 
     def __init__(self):
         self.summary = 'should-be-summary'
-        self.tags = ['tag1', 'tag2', 'tag3']
+        self.tags = [FakeTag('tag1'), FakeTag('tag2'), FakeTag('tag3')]
+
+
+class FakeTag(object):
+
+    def __init__(self, slug):
+        self.slug = slug
 
 
 class BetterMetaTestCase(unittest.TestCase):

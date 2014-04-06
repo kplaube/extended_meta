@@ -19,7 +19,11 @@ class FakeGenerator(object):
 class FakeArticle(object):
 
     def __init__(self):
+        self.title = 'should-be-title'
         self.summary = 'should-be-summary'
+        self.content = """<p>Lorem ipsum</p>
+        <p><span><img src="test.jpg"></span></p>
+        <p>Dolor sit amet</p>"""
         self.tags = [FakeTag('tag1'), FakeTag('tag2'), FakeTag('tag3')]
         self.url = 'should-be-the-article-url.html'
 
@@ -33,6 +37,8 @@ class FakeTag(object):
 class BetterMetaTestCase(unittest.TestCase):
 
     def setUp(self):
+        BetterMeta.settings['SITEURL'] = 'http://localhost'
+        BetterMeta.settings['DEFAULT_OG_IMAGE'] = 'should-be-default-og-image.jpg'
         self.article = FakeArticle()
 
 
@@ -60,11 +66,40 @@ class BetterMetaFilledMetaTestCase(BetterMetaTestCase):
         self.assertEqual(self.article.meta['robots'], 'index,follow')
 
     def test_should_create_meta_canonical(self):
-        BetterMeta.settings['SITEURL'] = 'http://localhost'
         BetterMeta.create_meta_attribute(self.article)
 
         self.assertEqual(self.article.meta['canonical'],
                             'http://localhost/should-be-the-article-url.html')
+
+    def test_should_create_meta_ogtitle_on_article_when_it_has_og_title(self):
+        self.article.meta_og_title = 'should-be-meta-og-title'
+
+        BetterMeta.create_meta_attribute(self.article)
+
+        self.assertEqual(self.article.meta['og_title'], 'should-be-meta-og-title')
+
+    def test_should_create_meta_ogdescription_on_article_when_it_has_og_description(self):
+        self.article.meta_og_description = 'should-be-meta-og-description'
+
+        BetterMeta.create_meta_attribute(self.article)
+
+        self.assertEqual(self.article.meta['og_description'], 'should-be-meta-og-description')
+
+    def test_should_create_meta_ogurl_on_article_when_it_has_og_url(self):
+        self.article.meta_og_url = 'http://mycustomdomain/should-be-article-url.html'
+
+        BetterMeta.create_meta_attribute(self.article)
+
+        self.assertEqual(self.article.meta['og_url'],
+                         'http://mycustomdomain/should-be-article-url.html')
+
+    def test_should_create_meta_ogimage_on_article_when_it_has_og_image(self):
+        self.article.meta_og_image = 'http://mycustomdomain/og.jpg'
+
+        BetterMeta.create_meta_attribute(self.article)
+
+        self.assertEqual(self.article.meta['og_image'],
+                         'http://mycustomdomain/og.jpg')
 
 
 class BetterMetaUnfilledMetaTestCase(BetterMetaTestCase):
@@ -100,6 +135,44 @@ class BetterMetaUnfilledMetaTestCase(BetterMetaTestCase):
 
         self.assertEqual(self.article.meta['description'],
             'Do you see any &#34;Teletubbies&#34; in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with...')
+
+
+class BetterMetaUnfilledOGMetaTestCase(BetterMetaTestCase):
+
+    def setUp(self):
+        super(BetterMetaUnfilledOGMetaTestCase, self).setUp()
+        BetterMeta.create_meta_attribute(self.article)
+
+    def test_should_use_the_article_title_as_ogtitle(self):
+        self.assertEqual(self.article.meta['og_title'], 'should-be-title')
+
+    def test_should_use_the_article_url_as_ogurl(self):
+        self.assertEqual(self.article.meta['og_url'],
+                         'http://localhost/should-be-the-article-url.html')
+
+    def test_should_use_the_article_description_as_ogdescription(self):
+        self.assertEqual(self.article.meta['og_description'],
+                         'should-be-summary')
+
+    def test_should_use_the_article_image_as_ogimage(self):
+        self.assertEqual(self.article.meta['og_image'], 'test.jpg')
+
+
+class BetterMetaUnfilledOGMetaAlternativeImageTestCase(BetterMetaTestCase):
+
+    def test_should_use_the_first_image_of_the_article(self):
+        self.article.content = """<h1>hey!</h1><p><div><img src="1.jpg"></div>
+        </p><br><img src="2.jpg">"""
+        BetterMeta.create_meta_attribute(self.article)
+
+        self.assertEqual(self.article.meta['og_image'], '1.jpg')
+
+    def test_should_use_the_default_image_as_ogimage_when_article_hasnt_one(self):
+        self.article.content = '<p>Lorem ipsum</p>'
+        BetterMeta.create_meta_attribute(self.article)
+
+        self.assertEqual(self.article.meta['og_image'],
+                         'should-be-default-og-image.jpg')
 
 
 class BetterMetaPelicanIntegrationTestCase(unittest.TestCase):

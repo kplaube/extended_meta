@@ -1,8 +1,11 @@
+from BeautifulSoup import BeautifulSoup
 from jinja2 import Markup
 from pelican import signals
+import re
 import textwrap
 
-META_ATTRIBUTES = ('description', 'keywords', 'robots')
+META_ATTRIBUTES = ('description', 'keywords', 'robots', 'og_title',
+                    'og_description', 'og_url', 'og_image', )
 DEFAULT_ROBOTS = 'index,follow'
 META_DESCRIPTION_LENGTH = 155
 
@@ -50,7 +53,7 @@ class BetterMeta:
         if len(summary) > META_DESCRIPTION_LENGTH:
             return description + '...'
         else:
-            return description
+            return str(description)
 
     @classmethod
     def get_default_meta_keywords(cls, article):
@@ -59,3 +62,26 @@ class BetterMeta:
     @classmethod
     def get_default_meta_robots(cls, article):
         return DEFAULT_ROBOTS
+
+    @classmethod
+    def get_default_meta_og_title(cls, article):
+        return article.title
+
+    @classmethod
+    def get_default_meta_og_description(cls, article):
+        return cls.get_default_meta_description(article)
+
+    @classmethod
+    def get_default_meta_og_url(cls, article):
+        return cls.get_canonical(article)
+
+    @classmethod
+    def get_default_meta_og_image(cls, article):
+        parsed_content = BeautifulSoup(article.content)
+        img_tag = parsed_content.find('img')
+
+        if not img_tag:
+            return cls.settings.get('DEFAULT_OG_IMAGE', '')
+
+        img_attrs = dict(img_tag.attrs)
+        return img_attrs['src']

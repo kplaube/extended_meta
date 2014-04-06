@@ -45,6 +45,7 @@ class BetterMeta:
     def get_default_meta_description(cls, article):
         summary = Markup(article.summary).striptags()
         description = textwrap.wrap(summary, META_DESCRIPTION_LENGTH)[0]
+        description = Markup.escape(description)
 
         if len(summary) > META_DESCRIPTION_LENGTH:
             return description + '...'

@@ -86,10 +86,10 @@ class BetterMetaUnfilledMetaTestCase(BetterMetaTestCase):
         self.article.summary = '<p>This is a "test"! <strong>Just a test!</strong></p>'
         BetterMeta.create_meta_attribute(self.article)
 
-        self.assertEqual(self.article.meta['description'], 'This is a \"test\"! Just a test!')
+        self.assertEqual(self.article.meta['description'], 'This is a &#34;test&#34;! Just a test!')
 
     def test_should_limit_the_summary_content_when_using_it_as_description(self):
-        self.article.summary = """<p>Do you see any Teletubbies in here? Do you
+        self.article.summary = """<p>Do you see any "Teletubbies" in here? Do you
         see a slender plastic tag clipped to my shirt with my name printed on
         it? Do you see a little Asian child with a blank expression on his
         face sitting outside on a mechanical helicopter that shakes when you
@@ -99,7 +99,7 @@ class BetterMetaUnfilledMetaTestCase(BetterMetaTestCase):
         BetterMeta.create_meta_attribute(self.article)
 
         self.assertEqual(self.article.meta['description'],
-            'Do you see any Teletubbies in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with a...')
+            'Do you see any &#34;Teletubbies&#34; in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with...')
 
 
 class BetterMetaPelicanIntegrationTestCase(unittest.TestCase):

@@ -38,7 +38,7 @@ class BetterMeta:
             else:
                 meta_value = getattr(cls, "get_default_%s" % article_attrib)(article)
 
-            article.meta[key] = str(meta_value)
+            article.meta[key] = meta_value
 
     @classmethod
     def get_canonical(cls, article):

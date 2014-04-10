@@ -34,11 +34,11 @@ class BetterMeta:
             article_attrib = "meta_%s" % key
 
             if hasattr(article, article_attrib):
-                meta_value = getattr(article, article_attrib)
+                meta_value = Markup.escape(getattr(article, article_attrib))
             else:
                 meta_value = getattr(cls, "get_default_%s" % article_attrib)(article)
 
-            article.meta[key] = meta_value
+            article.meta[key] = str(meta_value)
 
     @classmethod
     def get_canonical(cls, article):
@@ -53,7 +53,7 @@ class BetterMeta:
         if len(summary) > META_DESCRIPTION_LENGTH:
             return description + '...'
         else:
-            return str(description)
+            return description
 
     @classmethod
     def get_default_meta_keywords(cls, article):

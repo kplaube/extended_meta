@@ -69,6 +69,9 @@ class BetterMeta:
 
     @classmethod
     def get_default_meta_og_description(cls, article):
+        if hasattr(article, 'meta_description'):
+            return Markup.escape(article.meta_description)
+
         return cls.get_default_meta_description(article)
 
     @classmethod

@@ -24,6 +24,5 @@ This plugins adds the ``meta`` variable to article's context, so you can use the
     article.meta['og_url']
     article.meta['og_image']
 
-
   [BeautifulSoup]: http://www.crummy.com/software/BeautifulSoup/ "A Python library designed for quick turnaround projects like screen-scraping"
   [Jinja2]: http://jinja.pocoo.org/docs/ "Jinja2 is a modern and designer friendly templating language for Python"

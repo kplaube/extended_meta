@@ -155,17 +155,17 @@ class BetterMetaUnfilledOGMetaTestCase(BetterMetaTestCase):
                          'should-be-summary')
 
     def test_should_use_the_article_image_as_ogimage(self):
-        self.assertEqual(self.article.meta['og_image'], 'test.jpg')
+        self.assertEqual(self.article.meta['og_image'], 'http://localhost/test.jpg')
 
 
 class BetterMetaUnfilledOGMetaAlternativeImageTestCase(BetterMetaTestCase):
 
     def test_should_use_the_first_image_of_the_article(self):
-        self.article.content = """<h1>hey!</h1><p><div><img src="1.jpg"></div>
+        self.article.content = """<h1>hey!</h1><p><div><img src="http://myhost/1.jpg"></div>
         </p><br><img src="2.jpg">"""
         BetterMeta.create_meta_attribute(self.article)
 
-        self.assertEqual(self.article.meta['og_image'], '1.jpg')
+        self.assertEqual(self.article.meta['og_image'], 'http://myhost/1.jpg')
 
     def test_should_use_the_default_image_as_ogimage_when_article_hasnt_one(self):
         self.article.content = '<p>Lorem ipsum</p>'

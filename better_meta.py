@@ -87,4 +87,9 @@ class BetterMeta:
             return cls.settings.get('DEFAULT_OG_IMAGE', '')
 
         img_attrs = dict(img_tag.attrs)
-        return img_attrs['src']
+        src = img_attrs['src']
+
+        if 'http://' in src:
+            return src
+
+        return "{0}/{1}".format(cls.settings.get('SITEURL'), src)

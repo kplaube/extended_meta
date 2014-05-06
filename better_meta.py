@@ -92,4 +92,7 @@ class BetterMeta:
         if 'http://' in src:
             return src
 
+        if src[0] == '/':
+            src = src[0:]
+
         return "{0}/{1}".format(cls.settings.get('SITEURL'), src)

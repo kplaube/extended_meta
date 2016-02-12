@@ -1,1 +1,1 @@
-from better_meta import *
+from extended_meta import *

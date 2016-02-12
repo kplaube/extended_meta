@@ -1,20 +1,19 @@
 from BeautifulSoup import BeautifulSoup
 from jinja2 import Markup
 from pelican import signals
-import re
 import textwrap
 
 META_ATTRIBUTES = ('description', 'keywords', 'robots', 'og_title',
-                    'og_description', 'og_url', 'og_image', )
+                   'og_description', 'og_url', 'og_image', )
 DEFAULT_ROBOTS = 'index,follow'
 META_DESCRIPTION_LENGTH = 155
 
 
 def register():
-    signals.article_generator_finalized.connect(BetterMeta.add_meta_to_articles)
+    signals.article_generator_finalized.connect(ExtendedMeta.add_meta_to_articles)
 
 
-class BetterMeta:
+class ExtendedMeta:
     settings = {}
 
     @classmethod

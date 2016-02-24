@@ -1,4 +1,4 @@
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 from jinja2 import Markup
 from pelican import signals
 import textwrap
@@ -79,7 +79,7 @@ class ExtendedMeta:
 
     @classmethod
     def get_default_meta_og_image(cls, article):
-        parsed_content = BeautifulSoup(article.content)
+        parsed_content = BeautifulSoup(article.content, 'html.parser')
         img_tag = parsed_content.find('img')
 
         if not img_tag:
